@@ -1,0 +1,55 @@
+# Portal API 8085'te çalışır; 8080 çalıştırılan Spring Boot ÖRNEKLERİNE bırakılır
+# (örnekler kendilerini http://localhost:8080 üzerinden çağırır).
+server:
+  port: 8085
+
+spring:
+  application:
+    name: egitim-portal-server
+
+  # Task demo için H2 in-memory veritabanı
+  datasource:
+    url: jdbc:h2:mem:portaldb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+# Eğitim Portalı ayarları
+egitim:
+  # Boş bırakılırsa çalışma dizininden yukarı doğru depo kökü (01-java + 02-spring) aranır.
+  content:
+    root: ""
+  # React istemcisinin origin pattern'leri (CORS). Vite portu değişse de (5173/5174…) çalışır.
+  cors:
+    allowed-origins: "http://localhost:*,http://127.0.0.1:*"
+  # Kod çalıştırıcı zaman aşımları (saniye)
+  runner:
+    java-timeout-seconds: 30
+    spring-timeout-seconds: 180
+    spring-grace-seconds: 7
+
+# Actuator: UI'daki "API durumu" göstergesi health endpoint'ini okur
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.egitim.portal: INFO

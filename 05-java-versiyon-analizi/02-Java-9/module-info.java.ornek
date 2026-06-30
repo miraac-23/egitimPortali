@@ -1,0 +1,53 @@
+/*
+ * =============================================================================
+ *  ÖRNEK module-info.java  (Java 9 - JPMS)
+ * =============================================================================
+ *  Bu dosyanın uzantısı bilerek ".ornek" yapıldı; çünkü gerçek bir
+ *  "module-info.java" derleme dizinine konulursa tüm klasörün tek bir modül
+ *  olduğunu varsayar ve diğer örnek dosyaların derlenmesini bozar.
+ *
+ *  Gerçek bir modül projesinde bu dosya, modül kaynak kökünde
+ *  "module-info.java" adıyla bulunur. Aşağıda TÜM direktif türleri,
+ *  Türkçe açıklamalarıyla örneklenmiştir.
+ * =============================================================================
+ */
+
+module com.banka.cekirdek {
+
+    // -------- requires : BAĞIMLILIKLAR --------
+    // Bu modül JDBC kullanıyor:
+    requires java.sql;
+
+    // 'transitive': com.banka.cekirdek'i requires eden HER modül, otomatik
+    // olarak java.logging'e de erişir (geçişli/transitive bağımlılık).
+    requires transitive java.logging;
+
+    // 'static': sadece DERLEME anında gerekli, runtime'da opsiyonel
+    // (örn. yalnız anotasyon işlemede kullanılan bir kütüphane).
+    requires static com.fasterxml.jackson.annotation;
+
+    // -------- exports : DIŞA AÇILAN PAKETLER --------
+    // 'api' paketi herkese açık:
+    exports com.banka.cekirdek.api;
+
+    // SPI (Service Provider Interface) paketi:
+    exports com.banka.cekirdek.spi;
+
+    // Nitelikli (qualified) exports: SADECE belirtilen modüle açık.
+    exports com.banka.cekirdek.dahili.araclar to com.banka.uygulama;
+
+    // NOT: 'com.banka.cekirdek.internal' paketi hiç exports edilmedi -> GİZLİ.
+
+    // -------- opens : REFLECTION'A AÇMA --------
+    // Jackson/Hibernate gibi framework'ler bu paketi reflection ile okuyabilsin:
+    opens com.banka.cekirdek.model;                       // herkese (reflection)
+    opens com.banka.cekirdek.dto to com.fasterxml.jackson.databind; // sadece Jackson'a
+
+    // -------- uses / provides : SERVİSLER (ServiceLoader) --------
+    // Bu modül, LogServisi implementasyonlarını ServiceLoader ile arayacak:
+    uses com.banka.cekirdek.spi.LogServisi;
+
+    // Bu modül, ÖdemeSaglayici arayüzü için bir implementasyon SAĞLAR:
+    provides com.banka.cekirdek.spi.OdemeSaglayici
+        with com.banka.cekirdek.internal.KrediKartiSaglayici;
+}

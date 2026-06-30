@@ -1,0 +1,23 @@
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/* Kod blokları yatay kayabilsin, sayfa düzenini bozmasın */
+pre {
+  margin: 0;
+}
+
+/* Daha hoş kaydırma çubuğu */
+* {
+  scrollbar-width: thin;
+}
